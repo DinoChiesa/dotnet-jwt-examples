@@ -26,5 +26,5 @@ dotnet run JwtGenerator --name foo --expiry 3600
 
 ## License
 
-This material is copyright 2018, Google Inc.
+This material is Copyright (c) 2018, Google LLC.
 and is licensed under the Apache 2.0 license. See the [LICENSE](LICENSE) file.

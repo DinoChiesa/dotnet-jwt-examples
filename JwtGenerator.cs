@@ -1,4 +1,4 @@
-﻿// Copyright 2018 Google Inc.
+﻿// Copyright 2018 Google LLC.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ namespace Google.Apigee
       {
         return TimeResolver.ResolveExpression(spec)/1000;
       }
-        
+
       public static void Usage()
       {
         Console.WriteLine("\nJwtGenerator: generate an Hmac256-signed JWT.\n");
@@ -54,7 +54,7 @@ namespace Google.Apigee
 
       public JwtGenerator (string[] args)
       {
-        for (int i=1; i < args.Length; i++)
+        for (int i=0; i < args.Length; i++)
         {
           switch (args[i])
           {
@@ -107,7 +107,7 @@ namespace Google.Apigee
         var now = DateTime.UtcNow;
         var securityKey = new Microsoft.IdentityModel.Tokens.
           SymmetricSecurityKey(Encoding.UTF8.GetBytes(_passphrase));
-        
+
         var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, "HS256");
         var header = new JwtHeader(signingCredentials);
         var payload = new JwtPayload
@@ -122,9 +122,20 @@ namespace Google.Apigee
         var handler = new JwtSecurityTokenHandler();
         var tokenString = handler.WriteToken(secToken);
         Console.WriteLine("\ntoken:\n" + tokenString);
-        
+
         var decodedToken = handler.ReadToken(tokenString);
-        Console.WriteLine("\nDecoded: \n"+ decodedToken);
+        String decodedTokenString = decodedToken.ToString();
+        //Console.WriteLine("\nDecoded: \n"+ decodedTokenString);
+
+        var parts = decodedTokenString.Split(".", 2);
+
+        foreach(String part in parts)
+        {
+          dynamic parsedJson = Newtonsoft.Json.JsonConvert.DeserializeObject(part);
+          string formatted = Newtonsoft.Json.JsonConvert.SerializeObject(parsedJson /* decodedToken */, Newtonsoft.Json.Formatting.Indented);
+          Console.WriteLine("\n" + formatted);\
+        }
+
       }
     }
 }
